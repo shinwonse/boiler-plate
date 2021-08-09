@@ -3,9 +3,10 @@ const app = express() // express function을 이용해서 새로운 express app�
 const port = 5000 // port는 아무 port나 가능
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://wonse:<password>@boilerplate.zawty.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
+mongoose.connect('mongodb+srv://wonse:tlsrns486@boilerplate.zawty.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
-})
+}).then(()=>console.log('MongoDB Connected...'))
+  .catch(err => {console.log(err)})
 
 
 
