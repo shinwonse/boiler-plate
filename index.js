@@ -32,7 +32,7 @@ app.post('/register', (req,res) => { // 회원가입을 위한 route
   // 그것들을 데이터 베이스에 넣어준다.
 
   const user = new User(req.body)
-
+  // save 하기 전에 암호화를 해야함
   user.save((err, userInfo) => {
     if(err) return res.json({ success : false, err });
     return res.status(200).json({ // status(200)은 성공했다는 뜻.
