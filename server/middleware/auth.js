@@ -1,4 +1,4 @@
-const { User } = require('../modles/User');
+const { User } = require('../models/User');
 
 let auth = (req,res,next) => {
 

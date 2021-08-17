@@ -1,6 +1,6 @@
 const express = require('express'); // express 모듈을 가져오고
 const app = express(); // express function을 이용해서 새로운 express app을 만들고
-const port = 5000; // port는 아무 port나 가능
+
 const bodyParser = require('body-parser'); // body-parser 모듈을 가져옴
 const cookieParser = require('cookie-parser');
 const config = require('./config/key'); // key.js 가져옴
@@ -26,7 +26,11 @@ app.get('/', (req, res) => { // root 디렉토리에 오면 'Hello World!' 출�
   res.send('Hello World!')
 })
 
-app.post('/register', (req,res) => { // 회원가입을 위한 route
+app.get('/api/hello', (req,res) => {
+  res.send("안녕하세요 ~")
+})
+
+app.post('/api/users/register', (req,res) => { // 회원가입을 위한 route
 
   // 회원 가입 할때 필요한 정보들을 client에서 가져오면
   // 그것들을 데이터 베이스에 넣어준다.
@@ -67,30 +71,40 @@ app.post('/api/users/login', (req,res) => {
       })  
     })
   })
-
-  // role 1 어드민 role 2 특정 부서 어드민
-  // role 0 -> 일반유저 role 0이 아니면 관리자
-
-  app.get('/api/users/auth',auth,(req,res) => {
-
-    // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 말
-    res.status(200).json({
-      _id: req.user._id,
-      isAdmin: req.user.role === 0 ? false : true,
-      isAuth: true,
-      email: req.user.email,
-      name: req.user.name,
-      lastname: req.user.lastname,
-      role: req.user.role,
-      image: req.user.image
-    })
-
-  })
-
-  
-
-  
 })
+
+// role 1 어드민 role 2 특정 부서 어드민
+// role 0 -> 일반유저 role 0이 아니면 관리자
+
+app.get('/api/users/auth',auth,(req,res) => {
+
+  // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 말
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image
+  })
+})
+
+
+app.get('/api/users/logout', auth, (req, res) => {
+
+  User.findOneAndUpdate({_id: req.user._id},
+    {token:""},
+    (err,user) => {
+      if(err) return res.json({success:false, err});
+      return res.status(200).send({
+        success:true
+      })
+    })
+})
+
+const port = 5000; // port는 아무 port나 가능
 
 app.listen(port, () => { // port 5000 번에서 이 app을 실행
   console.log(`Example app listening at http://localhost:${port}`)
