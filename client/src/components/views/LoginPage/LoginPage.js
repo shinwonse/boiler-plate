@@ -1,57 +1,56 @@
-import axios from 'axios'
-// import { response } from 'express'
-import { useDispatch } from 'react-redux'
+import axios from 'axios';
+import React ,{ useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../_actions/user_actions';
-import React, {useState} from 'react'
+import { withRouter } from 'react-router-dom';
 
-function LoginPage() {
+function LoginPage(props) {
     const dispatch = useDispatch();
 
-    const [Email, setEmail] = useState("")
-    const [Password, setPassword] = useState("")
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
 
     const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value)
+        setEmail(event.currentTarget.value);
     }
-
-    const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value)
+    const onPasswordHandler = (event) =>{
+        setPassword(event.currentTarget.value);
     }
-
-    const onSubmitHandler = (event) => {
-        event.preventDefault();
+    const onSubmitHandler = (event) =>{
+        event.preventDefault(); //form reload 막기
 
         let body = {
-            email: Email,
-            password: Password
+            email : Email,
+            password : Password
         }
 
-        console.log('Email', Email)
-
         dispatch(loginUser(body))
+            .then(response => {
+                if(response.payload.loginSuccess){
+                    props.history.push('/')
+                } else {
+                    alert('Error');
+                }
+            })
     }
 
     return (
         <div style={{
-            display:'flex', justifyContent:'center',alignItems:'center'
-            ,width:'100%',height:'100vh'
+            display : 'flex', justifyContent : 'center' , alignItems : 'center',
+            width : '100%' , height : '100vh'
         }}>
-
-            <form style={{display:'flex', flexDirection: 'column'}}
-                onSubmit={onSubmitHandler}
-            >
+            <form onSubmit={onSubmitHandler} style={{ display : 'flex',flexDirection : 'column' }}>
                 <label>Email</label>
-                <input type="email" value={Email} onChange={onEmailHandler} />
+                <input type="email" value={Email} onChange={onEmailHandler}/>
                 <label>Password</label>
-                <input type="password" value={Password} onChange={onPasswordHandler} />
-                <br />
+                <input type="password" value={Password} onChange={onPasswordHandler}/>
+                <br/>
                 <button>
                     Login
                 </button>
             </form>
-
         </div>
     )
 }
 
-export default LoginPage
+export default withRouter(LoginPage)
